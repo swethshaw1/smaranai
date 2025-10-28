@@ -59,13 +59,13 @@ const sendEmail = async (fromEmail, name, message) => {
     ]);
 
     if (error) {
-      console.warn("⚠️ Supabase logging failed:", error.message);
+      console.warn("Supabase logging failed:", error.message);
     }
 
-    console.log("✅ Email sent successfully:", info.response);
+    console.log("Email sent successfully:", info.response);
     return info.response;
   } catch (error) {
-    console.error("❌ Email sending failed:", error.message);
+    console.error("Email sending failed:", error.message);
     throw error;
   }
 };

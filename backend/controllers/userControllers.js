@@ -6,7 +6,6 @@ const { supabase } = require("../config/database");
 exports.resetQuiz = async (req, res) => {
   try {
     const { googleId, subModuleId } = req.body.data;
-    console.log("Received:", { googleId, subModuleId });
 
     if (!googleId || !subModuleId)
       return res.status(400).json({ message: "Missing googleId or subModuleId" });

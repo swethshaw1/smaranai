@@ -6,7 +6,7 @@ exports.googleAuth = async (req, res) => {
   const { token } = req.body;
 
   try {
-    // 1️⃣ Verify Google token and extract payload
+    // Verify Google token and extract payload
     const googleUser = await verifyGoogleToken(token);
     if (!googleUser)
       return res.status(401).json({ message: "Invalid Google token" });
@@ -19,7 +19,7 @@ exports.googleAuth = async (req, res) => {
     if (!googleId)
       return res.status(400).json({ message: "Missing googleId in payload" });
 
-    // 2️⃣ Check if user exists
+    // Check if user exists
     let { data: user, error: userError } = await supabase
       .from("users")
       .select("*")
@@ -28,7 +28,7 @@ exports.googleAuth = async (req, res) => {
 
     if (userError && userError.code !== "PGRST116") throw userError;
 
-    // 3️⃣ Create user if not found
+    // Create user if not found
     if (!user) {
       const { data: newUser, error: insertError } = await supabase
         .from("users")
@@ -49,7 +49,7 @@ exports.googleAuth = async (req, res) => {
       user = newUser;
     }
 
-    // 4️⃣ Re-fetch latest data
+    // Re-fetch latest data
     const { data: freshUser, error: refreshError } = await supabase
       .from("users")
       .select("*")
@@ -59,7 +59,7 @@ exports.googleAuth = async (req, res) => {
     if (refreshError) throw refreshError;
     user = freshUser;
 
-    // 5️⃣ Generate JWT with updated fields
+    // Generate JWT with updated fields
     const jwtToken = jwt.sign(
       {
         _id: user._id,
@@ -72,7 +72,7 @@ exports.googleAuth = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    // 6️⃣ Return up-to-date user info
+    // Return up-to-date user info
     res.status(200).json({
       user: {
         googleId: user.googleId,
@@ -84,10 +84,8 @@ exports.googleAuth = async (req, res) => {
       },
       token: jwtToken,
     });
-
-    console.log("✅ User logged in:", user.email, "| Admin:", user.isAdmin);
   } catch (error) {
-    console.error("❌ Error in Google login:", error.message);
+    console.error("Error in Google login:", error.message);
     res.status(400).json({ message: error.message });
   }
 };

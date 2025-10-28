@@ -14,7 +14,7 @@ const paymentRoutes = require("./routes/paymentRoutes");
 
 // Load environment variables
 dotenv.config();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 // Connect to Supabase
 connect();
@@ -26,7 +26,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-const frontendDomain = process.env.FRONTEND_DOMAIN || "*";
+const frontendDomain = process.env.FRONTEND_DOMAIN;
 app.use(
   cors({
     origin: frontendDomain,
@@ -51,7 +51,7 @@ app.use("/api/admin/*", async (req, res, next) => {
       return res.status(401).json({ status: 401, message: "Missing credentials" });
     }
 
-    // ✅ Query Supabase with quoted camelCase columns
+    // Query Supabase with quoted camelCase columns
     const { data: user, error } = await supabase
       .from("users")
       .select('"isAdmin"')
@@ -63,7 +63,7 @@ app.use("/api/admin/*", async (req, res, next) => {
       return res.status(500).json({ status: 500, message: "Database error" });
     }
 
-    // ✅ Check if user has admin rights
+    // Check if user has admin rights
     if (user && user.isAdmin) {
       return next();
     }
@@ -98,5 +98,5 @@ app.get("/", (req, res) => {
 // Start the server
 // ----------------------------
 app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`Server running on port ${PORT}`);
 });

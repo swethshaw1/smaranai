@@ -223,7 +223,7 @@ exports.addModule = async (req, res) => {
   }
 };
 
-// ✅ Toggle Module active state (enable/disable)
+// Toggle Module active state (enable/disable)
 exports.toggleModuleActive = async (req, res) => {
   try {
     const { id } = req.params;
@@ -270,7 +270,7 @@ exports.toggleModuleActive = async (req, res) => {
   }
 };
 
-// ✅ Soft-disable subject instead of permanent delete
+// Soft-disable subject instead of permanent delete
 exports.deleteSubject = async (req, res) => {
   try {
     const { id } = req.params;
@@ -327,7 +327,7 @@ exports.deleteSubject = async (req, res) => {
   }
 };
 
-// ✅ Soft-delete module instead of permanent deletion
+// Soft-delete module instead of permanent deletion
 exports.deleteModule = async (req, res) => {
   try {
     const { id } = req.params;
@@ -367,7 +367,7 @@ exports.deleteModule = async (req, res) => {
   }
 };
 
-// ✅ Add a new SubModule
+// Add a new SubModule
 exports.addSubModule = async (req, res) => {
   try {
     const { name, moduleId, isPro, difficulty } = req.body;
@@ -414,7 +414,7 @@ exports.addSubModule = async (req, res) => {
   }
 };
 
-// ✅ Add a SubModule
+// Add a SubModule
 exports.addSubModule = async (req, res) => {
   try {
     const { name, moduleId, isPro, difficulty } = req.body;
@@ -463,7 +463,7 @@ exports.addSubModule = async (req, res) => {
   }
 };
 
-// ✅ Toggle SubModule active/inactive
+// Toggle SubModule active/inactive
 exports.toggleSubModuleActive = async (req, res) => {
   try {
     const { id } = req.params;
@@ -499,7 +499,7 @@ exports.toggleSubModuleActive = async (req, res) => {
   }
 };
 
-// ✅ Add a Question
+// Add a Question
 exports.addQuestion = async (req, res) => {
   try {
     const {
@@ -549,7 +549,7 @@ exports.addQuestion = async (req, res) => {
   }
 };
 
-// ✅ Update Question
+// Update Question
 exports.updateQuestion = async (req, res) => {
   try {
     const { id } = req.params;
@@ -603,7 +603,7 @@ exports.updateQuestion = async (req, res) => {
   }
 };
 
-// ✅ Delete Question
+// Delete Question
 exports.deleteQuestion = async (req, res) => {
   try {
     const { id } = req.params;
@@ -624,7 +624,7 @@ exports.deleteQuestion = async (req, res) => {
   }
 };
 
-// ✅ Multer Configuration
+// Multer Configuration
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadDir = "uploads";
@@ -642,7 +642,7 @@ const upload = multer({
   },
 }).single("file");
 
-// ✅ Helper: Process JSON Question File
+// Helper: Process JSON Question File
 async function processJSONFile(filePath, submoduleId) {
   const raw = JSON.parse(await fs.promises.readFile(filePath, "utf8"));
   if (!Array.isArray(raw.questions)) throw new Error("Invalid JSON: missing questions array");
@@ -674,7 +674,7 @@ async function processJSONFile(filePath, submoduleId) {
   return insertedIds;
 }
 
-// ✅ Helper: Process CSV Question File
+// Helper: Process CSV Question File
 async function processCSVFile(filePath, submoduleId) {
   const records = await new Promise((resolve, reject) => {
     const out = [];
@@ -739,7 +739,7 @@ async function processCSVFile(filePath, submoduleId) {
   return insertedIds;
 }
 
-// ✅ Create Submodule + Upload Questions File
+// Create Submodule + Upload Questions File
 exports.createSubmoduleWithQuestions = async (req, res) => {
   try {
     await new Promise((resolve, reject) => upload(req, res, (err) => (err ? reject(err) : resolve())));
@@ -795,7 +795,7 @@ exports.createSubmoduleWithQuestions = async (req, res) => {
   }
 };
 
-// ✅ Get Submodule + Questions
+// Get Submodule + Questions
 exports.getSubmoduleQuestions = async (req, res) => {
   try {
     const { submoduleId } = req.params;
