@@ -1,0 +1,94 @@
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+
+-- ==========================================
+-- USERS
+-- ==========================================
+CREATE TABLE "users" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "googleId" text NOT NULL,
+  "name" text NOT NULL,
+  "email" text NOT NULL,
+  "picture" text,
+  "isSubscribed" boolean DEFAULT false,
+  "isAdmin" boolean DEFAULT false
+);
+
+-- ==========================================
+-- SUBJECTS
+-- ==========================================
+CREATE TABLE "subjects" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "name" text NOT NULL,
+  "description" text,
+  "isActive" boolean DEFAULT true
+);
+
+-- ==========================================
+-- MODULES
+-- ==========================================
+CREATE TABLE "modules" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "name" text NOT NULL,
+  "subjectId" uuid REFERENCES "subjects"("_id") ON DELETE CASCADE,
+  "isActive" boolean DEFAULT true
+);
+
+-- ==========================================
+-- SUBMODULES
+-- ==========================================
+CREATE TABLE "submodules" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "name" text NOT NULL,
+  "moduleId" uuid REFERENCES "modules"("_id") ON DELETE CASCADE,
+  "isPro" boolean DEFAULT false,
+  "difficulty" text CHECK ("difficulty" IN ('easy', 'medium', 'hard')),
+  "isActive" boolean DEFAULT true
+);
+
+-- ==========================================
+-- QUESTIONS
+-- ==========================================
+CREATE TABLE "questions" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "questionText" text NOT NULL,
+  "questionType" text CHECK ("questionType" IN ('mcq', 'truefalse', 'fillblanks', 'matchfollowing')) DEFAULT 'mcq',
+  "options" jsonb,
+  "correctAnswer" text,
+  "blanks" text[],
+  "leftItems" text[],
+  "rightItems" text[],
+  "correctMappings" jsonb,
+  "submoduleId" uuid REFERENCES "submodules"("_id") ON DELETE CASCADE
+);
+
+-- ==========================================
+-- PAYMENTS
+-- ==========================================
+CREATE TABLE "payments" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "userId" uuid REFERENCES "users"("_id") ON DELETE CASCADE,
+  "email" text NOT NULL,
+  "cardLastFourDigits" text NOT NULL,
+  "amount" text NOT NULL,
+  "paymentStatus" text CHECK ("paymentStatus" IN ('completed')) DEFAULT 'completed',
+  "paymentDate" timestamp DEFAULT now(),
+  "createdAt" timestamp DEFAULT now(),
+  "updatedAt" timestamp DEFAULT now()
+);
+
+-- ==========================================
+-- ANALYTICS
+-- ==========================================
+CREATE TABLE "analytics" (
+  "_id" uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  "googleId" text NOT NULL,
+  "submoduleId" uuid REFERENCES "submodules"("_id") ON DELETE CASCADE,
+  "subjectId" uuid REFERENCES "subjects"("_id") ON DELETE CASCADE,
+  "tagCounts" jsonb,
+  "questionAnswers" jsonb,
+  "totalTimeSpent" numeric DEFAULT 0,
+  "correctAnswers" integer DEFAULT 0,
+  "incorrectAnswers" integer DEFAULT 0,
+  "progress" numeric DEFAULT 0,
+  "updatedAt" timestamp DEFAULT now()
+);
